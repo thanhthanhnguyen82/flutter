@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class InfusionType {
-  String id; // Thêm trường ID để xác định mỗi loại dịch truyền
+  String id;
   String name;
   String volume;
   String transmissionSpeed;
@@ -63,7 +63,7 @@ class _InfusionTypeScreenState extends State<InfusionTypeScreen> {
               DataColumn(label: Text('Tên Dịch Truyền')),
               DataColumn(label: Text('Thể Tích')),
               DataColumn(label: Text('Tốc Độ Truyền')),
-              DataColumn(label: Text('Chỉnh Sửa')),
+              DataColumn(label: Text('Chỉnh Sửa / xóa')),
             ],
             rows: infusionTypesList.map((infusionType) {
               return DataRow(cells: [
@@ -71,11 +71,22 @@ class _InfusionTypeScreenState extends State<InfusionTypeScreen> {
                 DataCell(Text(infusionType.volume)),
                 DataCell(Text(infusionType.transmissionSpeed)),
                 DataCell(
-                  ElevatedButton(
-                    onPressed: () {
-                      showUpdateDialog(context, infusionType);
-                    },
-                    child: Text('Chỉnh Sửa'),
+                  Row(
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          showUpdateDialog(context, infusionType);
+                        },
+                        child: Text('Chỉnh Sửa'),
+                      ),
+                      SizedBox(width: 8),
+                      ElevatedButton(
+                        onPressed: () {
+                          showDeleteDialog(context, infusionType);
+                        },
+                        child: Text('Xóa'),
+                      ),
+                    ],
                   ),
                 ),
               ]);
@@ -83,7 +94,6 @@ class _InfusionTypeScreenState extends State<InfusionTypeScreen> {
           ),
           ElevatedButton(
             onPressed: () {
-              // Hiển thị hộp thoại thêm mới khi nút được nhấp
               showAddDialog(context);
             },
             child: Text('Thêm Loại Dịch'),
@@ -118,15 +128,14 @@ class _InfusionTypeScreenState extends State<InfusionTypeScreen> {
           actions: [
             ElevatedButton(
               onPressed: () {
-                // Xử lý logic thêm mới ở đây
                 addInfusionType();
-                Navigator.of(context).pop(); // Đóng hộp thoại
+                Navigator.of(context).pop();
               },
               child: Text('Thêm'),
             ),
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Đóng hộp thoại
+                Navigator.of(context).pop();
               },
               child: Text('Hủy'),
             ),
@@ -165,15 +174,41 @@ class _InfusionTypeScreenState extends State<InfusionTypeScreen> {
           actions: [
             ElevatedButton(
               onPressed: () {
-                // Xử lý logic cập nhật ở đây
                 updateInfusionType(infusionType);
-                Navigator.of(context).pop(); // Đóng hộp thoại
+                Navigator.of(context).pop();
               },
               child: Text('Lưu'),
             ),
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Đóng hộp thoại
+                Navigator.of(context).pop();
+              },
+              child: Text('Hủy'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void showDeleteDialog(BuildContext context, InfusionType infusionType) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Xóa Loại Dịch'),
+          content: Text('Bạn có chắc chắn muốn xóa loại dịch này?'),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                deleteInfusionType(infusionType);
+                Navigator.of(context).pop();
+              },
+              child: Text('Xóa'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
               },
               child: Text('Hủy'),
             ),
@@ -188,14 +223,12 @@ class _InfusionTypeScreenState extends State<InfusionTypeScreen> {
     String newVolume = volumeController.text;
     String newSpeed = speedController.text;
 
-    // Thêm vào Firebase
     infusionTypes.add({
       'name': newName,
       'volume': newVolume,
       'transmissionSpeed': newSpeed,
     });
 
-    // Cập nhật danh sách
     setState(() {
       infusionTypesList.add(
         InfusionType(
@@ -207,7 +240,6 @@ class _InfusionTypeScreenState extends State<InfusionTypeScreen> {
       );
     });
 
-    // Xóa dữ liệu trong các controller sau khi thêm vào danh sách
     nameController.clear();
     volumeController.clear();
     speedController.clear();
@@ -218,17 +250,15 @@ class _InfusionTypeScreenState extends State<InfusionTypeScreen> {
     String newVolume = volumeController.text;
     String newSpeed = speedController.text;
 
-    // Cập nhật trong Firebase
     infusionTypes.doc(infusionType.id).update({
       'name': newName,
       'volume': newVolume,
       'transmissionSpeed': newSpeed,
     });
 
-    // Cập nhật trong danh sách
     setState(() {
-      int index =
-          infusionTypesList.indexWhere((element) => element.id == infusionType.id);
+      int index = infusionTypesList
+          .indexWhere((element) => element.id == infusionType.id);
       if (index != -1) {
         infusionTypesList[index] = InfusionType(
           id: infusionType.id,
@@ -239,9 +269,16 @@ class _InfusionTypeScreenState extends State<InfusionTypeScreen> {
       }
     });
 
-    // Xóa dữ liệu trong các controller sau khi cập nhật
     nameController.clear();
     volumeController.clear();
     speedController.clear();
+  }
+
+  void deleteInfusionType(InfusionType infusionType) {
+    infusionTypes.doc(infusionType.id).delete();
+
+    setState(() {
+      infusionTypesList.removeWhere((element) => element.id == infusionType.id);
+    });
   }
 }

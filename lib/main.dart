@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:NCKH/screen/signin_screen.dart';
-import 'package:NCKH/main_screen.dart';
-import 'app_provider.dart';
-import 'InfusionTypeScreen.dart';
+
+
+
 void main() async {
 
   // Trong phần main hoặc bất kỳ nơi nào trước khi thực hiện các thao tác Firebase

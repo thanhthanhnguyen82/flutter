@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'patient_info_screen.dart';
 import 'InfusionTimeScreen.dart';
 import 'InfusionTypeScreen.dart';
+import 'package:NCKH/screen/signin_screen.dart';
 
 class MenuScreen extends StatefulWidget {
   @override
@@ -96,76 +97,116 @@ class _MenuScreenState extends State<MenuScreen> {
     // In danh sách bệnh nhân ra console (để kiểm tra)
     print('Danh sách bệnh nhân: $patientList');
   }
+    
+  void handleLogout(BuildContext context) {
+   
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SignInScreen()));
+  }
 
   @override
-  Widget build(BuildContext context) {
+   Widget build(BuildContext context) {
     return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: <Widget>[
-          DrawerHeader(
-            decoration: BoxDecoration(
-              color: Colors.blue,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                CircleAvatar(
-                  radius: 30,
-                  backgroundColor: Colors.white,
-                  child: Icon(
-                    Icons.person,
-                    size: 40,
-                    color: Colors.blue,
+      child: Container(
+        color: Colors.blue,
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CircleAvatar(
+                    radius: 30,
+                    backgroundColor: Colors.white,
+                    child: Icon(
+                      Icons.person,
+                      size: 40,
+                      color: Colors.blue,
+                    ),
                   ),
-                ),
-                SizedBox(height: 10),
-                Text(
-                  'Người Dùng',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
+                  SizedBox(height: 10),
+                  Text(
+                    'Người Dùng',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          ListTile(
-            title: Text('Trang chủ'),
-            leading: Icon(Icons.home),
-            onTap: () {
-              Navigator.pop(context);
-              // Xử lý khi nhấp vào "Trang chủ"
-            },
-          ),
-          ListTile(
-            title: Text('Danh sách bệnh nhân'),
-            leading: Icon(Icons.list),
-            onTap: () {
-              Navigator.pop(context);
-              navigateToPatientList(context);
-            },
-          ),
-          ListTile(
-            title: Text('Loại Dịch truyền'),
-            leading: Icon(Icons.crop_square),
-            onTap: () {
-              Navigator.pop(context);
-              navigateToInfusionType(context);
-            },
-          ),
-          ListTile(
-            title: Text('Tộc độ truyền'),
-            leading: Icon(Icons.access_time),
-            onTap: () {
-              Navigator.pop(context);
-              navigateToInfusionTime(context);
-            },
-          ),
-          
-          
-        ],
+            buildListTile(
+              icon: Icons.home,
+              title: 'Trang chủ',
+              onTap: () {
+                Navigator.pop(context);
+              
+              },
+            ),
+            buildListTile(
+              icon: Icons.list,
+              title: 'Danh sách bệnh nhân',
+              onTap: () {
+                Navigator.pop(context);
+                navigateToPatientList(context);
+              },
+            ),
+            buildListTile(
+              icon: Icons.crop_square,
+              title: 'Loại Dịch truyền',
+              onTap: () {
+                Navigator.pop(context);
+                navigateToInfusionType(context);
+              },
+            ),
+            buildListTile(
+              icon: Icons.access_time,
+              title: 'Tốc độ truyền',
+              onTap: () {
+                Navigator.pop(context);
+                navigateToInfusionTime(context);
+              },
+            ),
+            buildListTile(
+              icon: Icons.person,
+              title: 'Đăng xuất',
+              onTap: () {
+                Navigator.pop(context);
+                handleLogout(context);
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
+ ListTile buildListTile({required IconData icon, required String title, required VoidCallback onTap}) {
+    return ListTile(
+      title: Text(
+        title,
+        style: TextStyle(color: Colors.white, fontSize: 16),
+      ),
+      leading: Icon(icon, color: Colors.white),
+      onTap: onTap,
+    );
+  }
+}
+
+void main() {
+  runApp(
+    MaterialApp(
+      home: Scaffold(
+        drawer: MenuScreen(),
+        appBar: AppBar(
+          title: Text('Your App Title'),
+        ),
+        body: Center(
+          child: Text('Your main content goes here'),
+        ),
+      ),
+    ),
+  );
 }
