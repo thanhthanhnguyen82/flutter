@@ -1,9 +1,6 @@
 import 'package:NCKH/main_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:NCKH/reusable_widgets/reusable_widget.dart';
-
-
-import 'package:NCKH/screen/home_screen.dart';
 import 'package:NCKH/utils/color_utils.dart';
 import 'package:flutter/material.dart';
 
