@@ -34,7 +34,7 @@ class _InfusionTimeScreenState extends State<InfusionTimeScreen> {
               onPressed: () {
                 _handleConfirmation();
               },
-              child: Text('Xác nhận'),
+              child: Text('Lưu'),
             ),
           ],
         ),

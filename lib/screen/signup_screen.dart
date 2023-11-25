@@ -44,7 +44,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 const SizedBox(
                   height: 20,
                 ),
-                reusableTextField("Nhaoa", Icons.person_outline, false,
+                reusableTextField("username", Icons.person_outline, false,
                     _userNameTextController),
                 const SizedBox(
                   height: 20,

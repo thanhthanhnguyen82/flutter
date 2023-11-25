@@ -10,20 +10,18 @@ void main() async {
 print('Trying to connect to Firebase...');
 
   WidgetsFlutterBinding.ensureInitialized();
-
-  await Firebase.initializeApp(
-    options: FirebaseOptions(
-      apiKey: "AIzaSyBAJjhR6CvLeDqZrsBDT_hXlYypowIFah8",
-      authDomain: "nckh-376a0.firebaseapp.com",
-      projectId: "nckh-376a0",
-      databaseURL: 'https://nckh-376a0.firebasedatabase.app',
-      
-      storageBucket: "nckh-376a0.appspot.com",
-      messagingSenderId: "725548516096",
-      appId: "1:725548516096:web:9f3c3f845c3ce2bd81e9e5",
-      measurementId: "G-RHQ8PJ1EB2",
-    ),
-  );
+await Firebase.initializeApp(
+  options: FirebaseOptions(
+    apiKey: "AIzaSyBAJjhR6CvLeDqZrsBDT_hXlYypowIFah8",
+    authDomain: "nckh-376a0.firebaseapp.com",
+    projectId: "nckh-376a0",
+    databaseURL: 'https://nckh-376a0-default-rtdb.firebaseio.com/',
+    storageBucket: "nckh-376a0.appspot.com",
+    messagingSenderId: "725548516096",
+    appId: "1:725548516096:web:9f3c3f845c3ce2bd81e9e5",
+    measurementId: "G-RHQ8PJ1EB2",
+  ),
+);
 
   runApp(MyApp());
 }

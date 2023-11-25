@@ -1,14 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'menu_screen.dart'; // Import your menu_screen.dart
-
-void main() {
-  runApp(
-    MaterialApp(
-      home: MainScreen(),
-    ),
-  );
-}
+import 'menu_screen.dart';
 
 class MainScreen extends StatelessWidget {
   final CollectionReference patients =
@@ -20,14 +12,14 @@ class MainScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text('Danh sách bệnh nhân'),
       ),
-      drawer: MenuScreen(), // Use your MenuScreen here
-      body: FutureBuilder<QuerySnapshot>(
-        future: patients.get(),
+      drawer: MenuScreen(),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: patients.snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return CircularProgressIndicator();
+            return Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            return Text('Đã xảy ra lỗi: ${snapshot.error}');
+            return Center(child: Text('Đã xảy ra lỗi: ${snapshot.error}'));
           } else {
             List<QueryDocumentSnapshot> patientDocs = snapshot.data!.docs;
 
@@ -38,6 +30,43 @@ class MainScreen extends StatelessWidget {
                   title: Text('Tên: ${patientDocs[index]['name']}'),
                   subtitle: Text(
                     'Loại dịch truyền: ${patientDocs[index]['infusionType']}',
+                  ),
+                  trailing: IconButton(
+                    icon: Icon(Icons.delete),
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: Text('Xác nhận xóa'),
+                          content: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('Tên: ${patientDocs[index]['name']}'),
+                              Text('Loại dịch truyền: ${patientDocs[index]['infusionType']}'),
+                              Text('Tốc độ truyền: ${patientDocs[index]['tocdotruyen']}'),
+                              Text('Dung tích bình: ${patientDocs[index]['dungtichbinh']}'),
+                              SizedBox(height: 10),
+                              Text('Bạn có chắc chắn muốn xóa bệnh nhân này?'),
+                            ],
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: Text('Hủy'),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                                deletePatient(patientDocs[index].id);
+                              },
+                              child: Text('Xác nhận'),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
                   ),
                   onTap: () {
                     String initialPatientName = patientDocs[index]['name'] ?? '';
@@ -65,7 +94,16 @@ class MainScreen extends StatelessWidget {
       ),
     );
   }
+
+  void deletePatient(String documentId) {
+    patients.doc(documentId).delete().then((value) {
+      print('Patient deleted successfully');
+    }).catchError((error) {
+      print('Error deleting patient: $error');
+    });
+  }
 }
+
 
 class PatientInfoScreen extends StatelessWidget {
   final String initialPatientName;

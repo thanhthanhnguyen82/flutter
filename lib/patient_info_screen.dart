@@ -151,7 +151,7 @@ class _PatientInfoScreenState extends State<PatientInfoScreen> {
 
               return SingleChildScrollView(
                 child: DataTable(
-                  columns: [
+                  columns: const [
                     DataColumn(label: Text('STT')),
                     DataColumn(label: Text('Tên bệnh nhân')),
                   ],
