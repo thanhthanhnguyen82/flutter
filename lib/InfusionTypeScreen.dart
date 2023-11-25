@@ -111,20 +111,23 @@ class _InfusionTypeScreenState extends State<InfusionTypeScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Thêm Loại Dịch'),
+          title: Text('Thêm Loại Dịch', style: TextStyle(color: Colors.deepPurple)),
           content: Column(
             children: [
+              SizedBox(height: 16),
               TextField(
                 controller: nameController,
-                decoration: InputDecoration(labelText: 'Tên Dịch Truyền'),
+                decoration: InputDecoration(labelText: 'Tên Dịch Truyền', fillColor: Colors.deepPurple),
               ),
+              SizedBox(height: 16),
               TextField(
                 controller: volumeController,
-                decoration: InputDecoration(labelText: 'Thể Tích'),
+                decoration: InputDecoration(labelText: 'Thể Tích', fillColor: Colors.deepPurple),
               ),
+              SizedBox(height: 16),
               TextField(
                 controller: speedController,
-                decoration: InputDecoration(labelText: 'Tốc Độ Truyền'),
+                decoration: InputDecoration(labelText: 'Tốc Độ Truyền', fillColor: Colors.deepPurple),
               ),
             ],
           ),
@@ -134,13 +137,14 @@ class _InfusionTypeScreenState extends State<InfusionTypeScreen> {
                 addInfusionType();
                 Navigator.of(context).pop();
               },
-              child: Text('Thêm'),
+              style: ElevatedButton.styleFrom(primary: Colors.deepPurple),
+              child: Text('Thêm', style: TextStyle(color: Colors.white)),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Hủy'),
+              child: Text('Hủy', style: TextStyle(color: Colors.deepPurple)),
             ),
           ],
         );
@@ -157,20 +161,23 @@ class _InfusionTypeScreenState extends State<InfusionTypeScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Chỉnh Sửa Loại Dịch'),
+          title: Text('Chỉnh Sửa Loại Dịch', style: TextStyle(color: Colors.deepOrange)),
           content: Column(
             children: [
+              SizedBox(height: 16),
               TextField(
                 controller: nameController,
-                decoration: InputDecoration(labelText: 'Tên Dịch Truyền'),
+                decoration: InputDecoration(labelText: 'Tên Dịch Truyền', fillColor: Colors.deepOrange),
               ),
+              SizedBox(height: 16),
               TextField(
                 controller: volumeController,
-                decoration: InputDecoration(labelText: 'Thể Tích'),
+                decoration: InputDecoration(labelText: 'Thể Tích', fillColor: Colors.deepOrange),
               ),
+              SizedBox(height: 16),
               TextField(
                 controller: speedController,
-                decoration: InputDecoration(labelText: 'Tốc Độ Truyền'),
+                decoration: InputDecoration(labelText: 'Tốc Độ Truyền', fillColor: Colors.deepOrange),
               ),
             ],
           ),
@@ -180,13 +187,14 @@ class _InfusionTypeScreenState extends State<InfusionTypeScreen> {
                 updateInfusionType(infusionType);
                 Navigator.of(context).pop();
               },
-              child: Text('Lưu'),
+              style: ElevatedButton.styleFrom(primary: Colors.deepOrange),
+              child: Text('Lưu', style: TextStyle(color: Colors.white)),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Hủy'),
+              child: Text('Hủy', style: TextStyle(color: Colors.deepOrange)),
             ),
           ],
         );
@@ -199,7 +207,7 @@ class _InfusionTypeScreenState extends State<InfusionTypeScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Xóa Loại Dịch'),
+          title: Text('Xóa Loại Dịch', style: TextStyle(color: Colors.red)),
           content: Text('Bạn có chắc chắn muốn xóa loại dịch này?'),
           actions: [
             ElevatedButton(
@@ -207,13 +215,14 @@ class _InfusionTypeScreenState extends State<InfusionTypeScreen> {
                 deleteInfusionType(infusionType);
                 Navigator.of(context).pop();
               },
-              child: Text('Xóa'),
+              style: ElevatedButton.styleFrom(primary: Colors.red),
+              child: Text('Xóa', style: TextStyle(color: Colors.white)),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Hủy'),
+              child: Text('Hủy', style: TextStyle(color: Colors.red)),
             ),
           ],
         );
@@ -225,16 +234,16 @@ class _InfusionTypeScreenState extends State<InfusionTypeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Loại Dịch Truyền'),
+        title: Text('Loại Dịch Truyền', style: TextStyle(color: Colors.black)),
       ),
       body: Column(
         children: [
           DataTable(
             columns: [
-              DataColumn(label: Text('Tên Dịch Truyền')),
-              DataColumn(label: Text('Thể Tích')),
-              DataColumn(label: Text('Tốc Độ Truyền')),
-              DataColumn(label: Text('Chỉnh Sửa / Xóa')),
+              DataColumn(label: Text('Tên Dịch Truyền', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black))),
+              DataColumn(label: Text('Thể Tích', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black))),
+              DataColumn(label: Text('Tốc Độ Truyền', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black))),
+              DataColumn(label: Text('Chỉnh Sửa / Xóa', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black))),
             ],
             rows: infusionTypesList.map((infusionType) {
               return DataRow(cells: [
@@ -248,14 +257,16 @@ class _InfusionTypeScreenState extends State<InfusionTypeScreen> {
                         onPressed: () {
                           showUpdateDialog(context, infusionType);
                         },
-                        child: Text('Chỉnh Sửa'),
+                        style: ElevatedButton.styleFrom(primary: Colors.orange),
+                        child: Text('Chỉnh Sửa', style: TextStyle(color: Colors.white)),
                       ),
                       SizedBox(width: 8),
                       ElevatedButton(
                         onPressed: () {
                           showDeleteDialog(context, infusionType);
                         },
-                        child: Text('Xóa'),
+                        style: ElevatedButton.styleFrom(primary: Colors.red),
+                        child: Text('Xóa', style: TextStyle(color: Colors.white)),
                       ),
                     ],
                   ),
@@ -263,11 +274,13 @@ class _InfusionTypeScreenState extends State<InfusionTypeScreen> {
               ]);
             }).toList(),
           ),
+          SizedBox(height: 16),
           ElevatedButton(
             onPressed: () {
               showAddDialog(context);
             },
-            child: Text('Thêm Loại Dịch'),
+            style: ElevatedButton.styleFrom(primary: Colors.purple),
+            child: Text('Thêm Loại Dịch', style: TextStyle(color: Colors.white)),
           ),
         ],
       ),
@@ -275,15 +288,3 @@ class _InfusionTypeScreenState extends State<InfusionTypeScreen> {
   }
 }
 
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: InfusionTypeScreen(),
-    );
-  }
-}

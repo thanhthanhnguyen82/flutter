@@ -15,7 +15,7 @@ class _MenuScreenState extends State<MenuScreen> {
   TextEditingController tocDoTruyenController = TextEditingController();
   TextEditingController dungTichBinhController = TextEditingController();
 
-  List<String> patientList = []; // Danh sách bệnh nhân
+  List<String> patientList = [];
 
   void navigateToInfusionType(BuildContext context) {
     Navigator.push(
@@ -90,30 +90,27 @@ class _MenuScreenState extends State<MenuScreen> {
     String tocDoTruyen = tocDoTruyenController.text;
     String dungTichBinh = dungTichBinhController.text;
 
-    // Thêm thông tin bệnh nhân vào danh sách
     String patientInfo = '$patientName, $truyenDich, $tocDoTruyen, $dungTichBinh';
     patientList.add(patientInfo);
 
-    // In danh sách bệnh nhân ra console (để kiểm tra)
     print('Danh sách bệnh nhân: $patientList');
   }
-    
+
   void handleLogout(BuildContext context) {
-   
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SignInScreen()));
   }
 
   @override
-   Widget build(BuildContext context) {
+  Widget build(BuildContext context) {
     return Drawer(
       child: Container(
-        color: Colors.blue,
+        color: Colors.indigo, // Updated to a vibrant color
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
             DrawerHeader(
               decoration: BoxDecoration(
-                color: Colors.blue,
+                color: Colors.indigo, // Updated to a vibrant color
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -124,7 +121,7 @@ class _MenuScreenState extends State<MenuScreen> {
                     child: Icon(
                       Icons.person,
                       size: 40,
-                      color: Colors.blue,
+                      color: Colors.indigoAccent, // Updated to a vibrant color
                     ),
                   ),
                   SizedBox(height: 10),
@@ -143,7 +140,6 @@ class _MenuScreenState extends State<MenuScreen> {
               title: 'Trang chủ',
               onTap: () {
                 Navigator.pop(context);
-              
               },
             ),
             buildListTile(
@@ -183,7 +179,8 @@ class _MenuScreenState extends State<MenuScreen> {
       ),
     );
   }
- ListTile buildListTile({required IconData icon, required String title, required VoidCallback onTap}) {
+
+  ListTile buildListTile({required IconData icon, required String title, required VoidCallback onTap}) {
     return ListTile(
       title: Text(
         title,
@@ -193,20 +190,4 @@ class _MenuScreenState extends State<MenuScreen> {
       onTap: onTap,
     );
   }
-}
-
-void main() {
-  runApp(
-    MaterialApp(
-      home: Scaffold(
-        drawer: MenuScreen(),
-        appBar: AppBar(
-          title: Text('Your App Title'),
-        ),
-        body: Center(
-          child: Text('Your main content goes here'),
-        ),
-      ),
-    ),
-  );
 }

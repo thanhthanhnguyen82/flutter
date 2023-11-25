@@ -11,6 +11,7 @@ class MainScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Danh sách bệnh nhân'),
+        backgroundColor: const Color.fromARGB(255, 161, 81, 75),
       ),
       drawer: MenuScreen(),
       body: StreamBuilder<QuerySnapshot>(
@@ -26,66 +27,35 @@ class MainScreen extends StatelessWidget {
             return ListView.builder(
               itemCount: patientDocs.length,
               itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text('Tên: ${patientDocs[index]['name']}'),
-                  subtitle: Text(
-                    'Loại dịch truyền: ${patientDocs[index]['infusionType']}',
-                  ),
-                  trailing: IconButton(
-                    icon: Icon(Icons.delete),
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          title: Text('Xác nhận xóa'),
-                          content: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('Tên: ${patientDocs[index]['name']}'),
-                              Text('Loại dịch truyền: ${patientDocs[index]['infusionType']}'),
-                              Text('Tốc độ truyền: ${patientDocs[index]['tocdotruyen']}'),
-                              Text('Dung tích bình: ${patientDocs[index]['dungtichbinh']}'),
-                              SizedBox(height: 10),
-                              Text('Bạn có chắc chắn muốn xóa bệnh nhân này?'),
-                            ],
-                          ),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: Text('Hủy'),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                                deletePatient(patientDocs[index].id);
-                              },
-                              child: Text('Xác nhận'),
-                            ),
-                          ],
-                        ),
+                return Card(
+                  elevation: 5,
+                  margin: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  color: Colors.blue[50],
+                  child: ListTile(
+                    title: Text(
+                      'Tên: ${patientDocs[index]['name']}',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    subtitle: Text(
+                      'Loại dịch truyền: ${patientDocs[index]['infusionType']}',
+                    ),
+                    trailing: IconButton(
+                      icon: Icon(Icons.delete),
+                      color: Colors.red,
+                      onPressed: () {
+                        _showDeleteConfirmation(context, patientDocs[index]);
+                      },
+                    ),
+                    onTap: () {
+                      _navigateToPatientInfo(
+                        context,
+                        patientDocs[index]['name'] ?? '',
+                        patientDocs[index]['infusionType'] ?? '',
+                        patientDocs[index]['tocdotruyen'] ?? '',
+                        patientDocs[index]['dungtichbinh'] ?? '',
                       );
                     },
                   ),
-                  onTap: () {
-                    String initialPatientName = patientDocs[index]['name'] ?? '';
-                    String truyenDich = patientDocs[index]['infusionType'] ?? '';
-                    String tocdotruyen = patientDocs[index]['tocdotruyen'] ?? '';
-                    String dungtichbinh = patientDocs[index]['dungtichbinh'] ?? '';
-
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => PatientInfoScreen(
-                          initialPatientName,
-                          truyenDich,
-                          tocdotruyen,
-                          dungtichbinh,
-                        ),
-                      ),
-                    );
-                  },
                 );
               },
             );
@@ -95,15 +65,72 @@ class MainScreen extends StatelessWidget {
     );
   }
 
-  void deletePatient(String documentId) {
+  void _showDeleteConfirmation(BuildContext context, QueryDocumentSnapshot patient) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Xác nhận xóa'),
+        content: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Tên: ${patient['name']}'),
+            Text('Loại dịch truyền: ${patient['infusionType']}'),
+            Text('Tốc độ truyền: ${patient['tocdotruyen']}'),
+            Text('Dung tích bình: ${patient['dungtichbinh']}'),
+            SizedBox(height: 10),
+            Text('Bạn có chắc chắn muốn xóa bệnh nhân này?'),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Text('Hủy'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              _deletePatient(patient.id);
+            },
+            child: Text(
+              'Xác nhận',
+              style: TextStyle(color: Colors.red),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _deletePatient(String documentId) {
     patients.doc(documentId).delete().then((value) {
       print('Patient deleted successfully');
     }).catchError((error) {
       print('Error deleting patient: $error');
     });
   }
-}
 
+  void _navigateToPatientInfo(
+    BuildContext context,
+    String initialPatientName,
+    String truyenDich,
+    String tocdotruyen,
+    String dungtichbinh,
+  ) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PatientInfoScreen(
+          initialPatientName,
+          truyenDich,
+          tocdotruyen,
+          dungtichbinh,
+        ),
+      ),
+    );
+  }
+}
 
 class PatientInfoScreen extends StatelessWidget {
   final String initialPatientName;
@@ -123,22 +150,25 @@ class PatientInfoScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Thông tin bệnh nhân'),
+        backgroundColor: Colors.blue,
       ),
-      body: ListView(
-        children: <Widget>[
-          ListTile(
-            title: Text('Tên bệnh nhân: $initialPatientName'),
-          ),
-          ListTile(
-            title: Text('Loại dịch truyền: $truyenDich'),
-          ),
-          ListTile(
-            title: Text('Tốc độ truyền: $tocdotruyen'),
-          ),
-          ListTile(
-            title: Text('Dung tích bình: $dungtichbinh'),
-          ),
-        ],
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              'Tên bệnh nhân: $initialPatientName',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 10),
+            Text('Loại dịch truyền: $truyenDich', style: TextStyle(fontSize: 16)),
+            SizedBox(height: 10),
+            Text('Tốc độ truyền: $tocdotruyen', style: TextStyle(fontSize: 16)),
+            SizedBox(height: 10),
+            Text('Dung tích bình: $dungtichbinh', style: TextStyle(fontSize: 16)),
+          ],
+        ),
       ),
     );
   }

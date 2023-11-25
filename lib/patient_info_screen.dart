@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+// ignore: must_be_immutable
 class PatientInfoScreen extends StatefulWidget {
   String initialPatientName;
   String truyenDich;
@@ -24,69 +25,52 @@ class _PatientInfoScreenState extends State<PatientInfoScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Thông tin bệnh nhân'),
+        backgroundColor: const Color.fromARGB(255, 161, 81, 75),
       ),
-      body: ListView(
-        children: <Widget>[
-          ElevatedButton(
-            onPressed: () {
-              _showAddPatientDialog(context);
-            },
-            child: Text('Thêm bệnh nhân mới'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              _showPatientList(context);
-            },
-            child: Text('Danh sách bệnh nhân'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showAddPatientDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text('Thêm bệnh nhân mới'),
-          content: Column(
-            children: [
-              TextField(
-                controller: _patientNameController,
-                decoration: InputDecoration(labelText: 'Tên bệnh nhân'),
-              ),
-              TextField(
-                controller: _infusionTypeController,
-                decoration: InputDecoration(labelText: 'Loại dịch truyền'),
-              ),
-              TextField(
-                controller: _tocDoTruyenController,
-                decoration: InputDecoration(labelText: 'Tốc độ truyền'),
-              ),
-              TextField(
-                controller: _dungtichbinhController,
-                decoration: InputDecoration(labelText: 'Dung tích bình'),
-              ),
-            ],
-          ),
-          actions: <Widget>[
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            SizedBox(height: 16),
+            TextField(
+              controller: _patientNameController,
+              decoration: InputDecoration(labelText: 'Tên bệnh nhân', fillColor: Colors.white),
+            ),
+            SizedBox(height: 16),
+            TextField(
+              controller: _infusionTypeController,
+              decoration: InputDecoration(labelText: 'Loại dịch truyền', fillColor: Colors.white),
+            ),
+            SizedBox(height: 16),
+            TextField(
+              controller: _tocDoTruyenController,
+              decoration: InputDecoration(labelText: 'Tốc độ truyền', fillColor: Colors.white),
+            ),
+            SizedBox(height: 16),
+            TextField(
+              controller: _dungtichbinhController,
+              decoration: InputDecoration(labelText: 'Dung tích bình', fillColor: Colors.white),
+            ),
+            SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
                 _savePatientInfo();
-                Navigator.pop(context);
               },
-              child: Text('Lưu thông tin'),
+              style: ElevatedButton.styleFrom(primary: Colors.purple),
+              child: Text('Lưu thông tin', style: TextStyle(color: Colors.white)),
             ),
-            TextButton(
+            SizedBox(height: 16),
+            ElevatedButton(
               onPressed: () {
-                Navigator.pop(context);
+                _showPatientList(context);
               },
-              child: Text('Hủy'),
+              style: ElevatedButton.styleFrom(primary: Colors.purple),
+              child: Text('Danh sách bệnh nhân', style: TextStyle(color: Colors.white)),
             ),
           ],
-        );
-      },
+        ),
+      ),
     );
   }
 
@@ -130,51 +114,52 @@ class _PatientInfoScreenState extends State<PatientInfoScreen> {
     );
   }
 
-  void _showPatientList(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text('Danh sách bệnh nhân'),
-          content: StreamBuilder<QuerySnapshot>(
-            stream: patients.snapshots(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return CircularProgressIndicator();
-              }
+ void _showPatientList(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: Text('Danh sách bệnh nhân', style: TextStyle(color: Colors.black)),
+        content: StreamBuilder<QuerySnapshot>(
+          stream: patients.snapshots(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return CircularProgressIndicator();
+            }
 
-              if (snapshot.hasError) {
-                return Text('Đã xảy ra lỗi: ${snapshot.error}');
-              }
+            if (snapshot.hasError || snapshot.data == null) {
+              return Text('Đã xảy ra lỗi hoặc dữ liệu rỗng: ${snapshot.error}');
+            }
 
-              List<QueryDocumentSnapshot> patients = snapshot.data!.docs;
+            List<QueryDocumentSnapshot> patients = snapshot.data!.docs;
 
-              return SingleChildScrollView(
-                child: DataTable(
-                  columns: const [
-                    DataColumn(label: Text('STT')),
-                    DataColumn(label: Text('Tên bệnh nhân')),
-                  ],
-                  rows: patients.map((patient) {
-                    return DataRow(cells: [
-                      DataCell(Text('${patients.indexOf(patient) + 1}')),
-                      DataCell(Text('${patient['name']}')),
-                    ]);
-                  }).toList(),
-                ),
-              );
+            return SingleChildScrollView(
+              child: DataTable(
+                columns: const [
+                  DataColumn(label: Text('STT', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.orange))),
+                  DataColumn(label: Text('Tên bệnh nhân', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.orange))),
+                ],
+                rows: patients.map((patient) {
+                  return DataRow(cells: [
+                    DataCell(Text('${patients.indexOf(patient) + 1}', style: TextStyle(color: Colors.white))),
+                    DataCell(Text('${patient['name']}', style: TextStyle(color: Colors.white))),
+                  ]);
+                }).toList(),
+              ),
+            );
+          },
+        ),
+        actions: <Widget>[
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
             },
+            style: ElevatedButton.styleFrom(primary: Colors.white),
+            child: Text('Đóng', style: TextStyle(color: Colors.white)),
           ),
-          actions: <Widget>[
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text('Đóng'),
-            ),
-          ],
-        );
-      },
-    );
-  }
+        ],
+      );
+    },
+  );
+}
 }

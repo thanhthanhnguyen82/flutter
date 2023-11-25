@@ -14,27 +14,32 @@ class _InfusionTimeScreenState extends State<InfusionTimeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Tốc độ truyền'),
+         backgroundColor: const Color.fromARGB(255, 161, 81, 75),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              _infusionSpeedController.text.isEmpty
-                  ? 'Chưa nhập tốc độ truyền'
-                  : 'Tốc độ truyền: ${_infusionSpeedController.text} gout/phút',
-            ),
-            ElevatedButton(
-              onPressed: () {
-                _selectInfusionSpeed(context);
-              },
-              child: Text('Nhập tốc độ truyền'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                _handleConfirmation();
-              },
-              child: Text('Lưu'),
+            SizedBox(height: 16), // Add some spacing
+            Container(
+              padding: EdgeInsets.all(16), // Add padding around the container
+              child: Column(
+                children: [
+                  TextField(
+                    controller: _infusionSpeedController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(labelText: 'Tốc độ truyền'),
+                  ),
+                  SizedBox(height: 16), // Add some spacing
+                  ElevatedButton(
+                    onPressed: () {
+                      _handleConfirmation();
+                    },
+                    style: ElevatedButton.styleFrom(primary: Colors.blue),
+                    child: Text('Lưu thông tin', style: TextStyle(color: Colors.white)),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -53,14 +58,7 @@ class _InfusionTimeScreenState extends State<InfusionTimeScreen> {
             keyboardType: TextInputType.number,
             decoration: InputDecoration(labelText: 'Tốc độ truyền'),
           ),
-          actions: <Widget>[
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop(_infusionSpeedController.text);
-              },
-              child: Text('Xác nhận'),
-            ),
-          ],
+          
         );
       },
     );
@@ -85,9 +83,9 @@ class _InfusionTimeScreenState extends State<InfusionTimeScreen> {
 
   void _saveInfusionSpeedToFirebase(String speed) async {
     try {
-      // Replace 'your_collection' with the actual name of your Firebase collection
+      // Replace 'infusion_speeds' with the actual name of your Firestore collection
       CollectionReference infusionSpeeds =
-          FirebaseFirestore.instance.collection('your_collection');
+          FirebaseFirestore.instance.collection('infusion_speeds');
 
       // Add a new document with a unique ID
       await infusionSpeeds.add({
