@@ -34,7 +34,8 @@ class _MenuScreenState extends State<MenuScreen> {
   void navigateToPatientList(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => PatientInfoScreen('', '', '', '')),
+      MaterialPageRoute(
+          builder: (context) => PatientInfoScreen('', '', '', '')),
     );
   }
 
@@ -90,14 +91,16 @@ class _MenuScreenState extends State<MenuScreen> {
     String tocDoTruyen = tocDoTruyenController.text;
     String dungTichBinh = dungTichBinhController.text;
 
-    String patientInfo = '$patientName, $truyenDich, $tocDoTruyen, $dungTichBinh';
+    String patientInfo =
+        '$patientName, $truyenDich, $tocDoTruyen, $dungTichBinh';
     patientList.add(patientInfo);
 
     print('Danh sách bệnh nhân: $patientList');
   }
 
   void handleLogout(BuildContext context) {
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SignInScreen()));
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => SignInScreen()));
   }
 
   @override
@@ -180,7 +183,10 @@ class _MenuScreenState extends State<MenuScreen> {
     );
   }
 
-  ListTile buildListTile({required IconData icon, required String title, required VoidCallback onTap}) {
+  ListTile buildListTile(
+      {required IconData icon,
+      required String title,
+      required VoidCallback onTap}) {
     return ListTile(
       title: Text(
         title,
