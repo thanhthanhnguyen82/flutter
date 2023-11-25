@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:NCKH/reusable_widgets/reusable_widget.dart';
 import 'package:NCKH/utils/color_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:NCKH/screen/uiButton.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -80,7 +81,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 const SizedBox(
                   height: 20,
                 ),
-                firebaseUIButton(context, "Sign Up", () {
+                UIButton(context, "Sign Up", () {
                   _signUp();
                 }),
               ],

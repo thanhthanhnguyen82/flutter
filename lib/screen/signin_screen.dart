@@ -4,8 +4,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:NCKH/screen/signUpOption.dart';
 import 'package:NCKH/screen/reusableTextField.dart';
-import 'package:NCKH/screen/forget.dart';
 import 'package:NCKH/screen/uiButton.dart';
+import 'package:NCKH/screen/reset_screen.dart';
+import 'package:NCKH/screen/signup_screen.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({Key? key}) : super(key: key);
@@ -127,7 +128,6 @@ class _SignInScreenState extends State<SignInScreen> {
                 const SizedBox(
                   height: 5,
                 ),
-                ForgetPassword(context),
                 UIButton(context, "Đăng nhập", () async {
                   FirebaseAuth.instance
                       .signInWithEmailAndPassword(
@@ -145,7 +145,13 @@ class _SignInScreenState extends State<SignInScreen> {
                     print("Lỗi ${error.toString()}");
                   });
                 }),
-                const SignUpOption(),
+                const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SignUpOption("Đăng kí  | ", SignUpScreen()),
+                    SignUpOption("Quên mật khẩu", ResetPassword()),
+                  ],
+                ),
               ],
             ),
           ),

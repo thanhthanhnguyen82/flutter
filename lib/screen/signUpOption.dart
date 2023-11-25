@@ -2,22 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:NCKH/screen/signup_screen.dart';
 
 class SignUpOption extends StatelessWidget {
-  const SignUpOption({super.key});
+  const SignUpOption(this.textButton, this.onPressed, {super.key});
+  final String textButton;
+  final onPressed;
   @override
   Widget build(context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Text("Chưa có tài khoản?",
-            style: TextStyle(color: Colors.white70)),
         GestureDetector(
           onTap: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => SignUpScreen()));
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => onPressed));
           },
-          child: const Text(
-            " Đăng ký",
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          child: Text(
+            textButton,
+            style: const TextStyle(
+                color: Colors.white, fontWeight: FontWeight.bold),
           ),
         ),
       ],
