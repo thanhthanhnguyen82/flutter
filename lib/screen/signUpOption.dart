@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:NCKH/screen/signup_screen.dart';
 
 class SignUpOption extends StatelessWidget {
   const SignUpOption(this.textButton, this.onPressed, {super.key});

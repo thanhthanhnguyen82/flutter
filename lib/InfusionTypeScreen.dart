@@ -1,5 +1,5 @@
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class InfusionType {
   String? id;
@@ -21,11 +21,9 @@ class InfusionTypeScreen extends StatefulWidget {
 }
 
 class _InfusionTypeScreenState extends State<InfusionTypeScreen> {
-  final DatabaseReference infusionTypesRef =
-      FirebaseDatabase.instance.reference().child('infusion_types');
+  final CollectionReference infusionTypesRef = FirebaseFirestore.instance.collection('infusion_types');
 
   List<InfusionType> infusionTypesList = [];
-  bool _isMounted = false;
 
   TextEditingController nameController = TextEditingController();
   TextEditingController volumeController = TextEditingController();
@@ -34,35 +32,21 @@ class _InfusionTypeScreenState extends State<InfusionTypeScreen> {
   @override
   void initState() {
     super.initState();
-    _isMounted = true;
     _loadInfusionTypes();
   }
 
-  @override
-  void dispose() {
-    _isMounted = false;
-    super.dispose();
-  }
-
   void _loadInfusionTypes() {
-    infusionTypesRef.onValue.listen((event) {
-      try {
-        if (_isMounted && event.snapshot.value != null) {
-          Map<dynamic, dynamic> values = event.snapshot.value as Map<dynamic, dynamic>;
-          setState(() {
-            infusionTypesList = values.entries.map((entry) {
-              return InfusionType(
-                id: entry.key,
-                name: entry.value['name'],
-                volume: entry.value['volume'],
-                transmissionSpeed: entry.value['transmissionSpeed'],
-              );
-            }).toList();
-          });
-        }
-      } catch (e) {
-        print('Error loading data: $e');
-      }
+    infusionTypesRef.snapshots().listen((snapshot) {
+      setState(() {
+        infusionTypesList = snapshot.docs.map((doc) {
+          return InfusionType(
+            id: doc.id,
+            name: doc['name'],
+            volume: doc['volume'],
+            transmissionSpeed: doc['transmissionSpeed'],
+          );
+        }).toList();
+      });
     });
   }
 
@@ -71,25 +55,11 @@ class _InfusionTypeScreenState extends State<InfusionTypeScreen> {
     String newVolume = volumeController.text;
     String newSpeed = speedController.text;
 
-    DatabaseReference newInfusionTypeRef = infusionTypesRef.push();
-    newInfusionTypeRef.set({
+    infusionTypesRef.add({
       'name': newName,
       'volume': newVolume,
       'transmissionSpeed': newSpeed,
     });
-
-    if (_isMounted) {
-      setState(() {
-        infusionTypesList.add(
-          InfusionType(
-            id: newInfusionTypeRef.key!,
-            name: newName,
-            volume: newVolume,
-            transmissionSpeed: newSpeed,
-          ),
-        );
-      });
-    }
 
     nameController.clear();
     volumeController.clear();
@@ -97,13 +67,25 @@ class _InfusionTypeScreenState extends State<InfusionTypeScreen> {
   }
 
   void updateInfusionType(InfusionType infusionType) {
-    // Replace this with your actual implementation for updating
-    print('Updating Infusion Type: ${infusionType.name}');
+    String documentId = infusionType.id!;
+    String updatedName = nameController.text;
+    String updatedVolume = volumeController.text;
+    String updatedSpeed = speedController.text;
+
+    infusionTypesRef.doc(documentId).update({
+      'name': updatedName,
+      'volume': updatedVolume,
+      'transmissionSpeed': updatedSpeed,
+    });
+
+    nameController.clear();
+    volumeController.clear();
+    speedController.clear();
   }
 
   void deleteInfusionType(InfusionType infusionType) {
-    // Replace this with your actual implementation for deleting
-    print('Deleting Infusion Type: ${infusionType.name}');
+    String documentId = infusionType.id!;
+    infusionTypesRef.doc(documentId).delete();
   }
 
   Future<void> showAddDialog(BuildContext context) async {
@@ -287,4 +269,3 @@ class _InfusionTypeScreenState extends State<InfusionTypeScreen> {
     );
   }
 }
-
