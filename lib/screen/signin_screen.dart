@@ -2,9 +2,10 @@ import 'package:NCKH/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:NCKH/screen/signUpOption.dart';
-import 'package:NCKH/screen/reusableTextField.dart';
-import 'package:NCKH/screen/uiButton.dart';
+import 'package:NCKH/reusable_widgets/textButton.dart';
+import 'package:NCKH/reusable_widgets/reusableTextField.dart';
+import 'package:NCKH/reusable_widgets/uiButton.dart';
+import 'package:NCKH/reusable_widgets/showError.dart';
 import 'package:NCKH/screen/reset_screen.dart';
 import 'package:NCKH/screen/signup_screen.dart';
 
@@ -36,15 +37,6 @@ class _SignInScreenState extends State<SignInScreen> {
         _passwordTextController.text = prefs.getString('user_password') ?? '';
       }
     });
-  }
-
-  static Color hexStringToColor(String hexColor) {
-    final buffer = StringBuffer();
-    if (hexColor.length == 6 || hexColor.length == 7) {
-      buffer.write('ff');
-    }
-    buffer.write(hexColor.replaceFirst('#', ''));
-    return Color(int.parse(buffer.toString(), radix: 16));
   }
 
   void onLoginSuccess() {
@@ -85,12 +77,12 @@ class _SignInScreenState extends State<SignInScreen> {
       body: Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              hexStringToColor("CB2B93"),
-              hexStringToColor("9546C4"),
-              hexStringToColor("5E61F4"),
+              Color.fromARGB(213, 234, 0, 199),
+              Color.fromARGB(171, 148, 42, 219),
+              Color.fromARGB(192, 86, 0, 234),
             ],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
@@ -142,7 +134,8 @@ class _SignInScreenState extends State<SignInScreen> {
                     }
                     onLoginSuccess();
                   }).catchError((error) {
-                    print("Lỗi ${error.toString()}");
+                    ErrorHandling(context, "Đăng nhập không thành công.")
+                        .showErr();
                   });
                 }),
                 const Row(
