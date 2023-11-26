@@ -1,6 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'menu_screen.dart';
+import 'edit_patient_screen.dart'; // Import màn hình sửa thông tin
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Quản lý bệnh nhân',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: MainScreen(),
+    );
+  }
+}
 
 class MainScreen extends StatelessWidget {
   final CollectionReference patients =
@@ -39,12 +57,32 @@ class MainScreen extends StatelessWidget {
                     subtitle: Text(
                       'Loại dịch truyền: ${patientDocs[index]['infusionType']}',
                     ),
-                    trailing: IconButton(
-                      icon: Icon(Icons.delete),
-                      color: Colors.red,
-                      onPressed: () {
-                        _showDeleteConfirmation(context, patientDocs[index]);
-                      },
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.edit),
+                          color: Colors.blue,
+                          onPressed: () {
+                            _navigateToEditPatient(
+                              context,
+                              patientDocs[index]['name'],
+                              patientDocs[index]['infusionType'],
+                              patientDocs[index]['tocdotruyen'],
+                              patientDocs[index]['dungtichbinh'],
+                              patientDocs[index].id,
+                            );
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.delete),
+                          color: Colors.red,
+                          onPressed: () {
+                            _showDeleteConfirmation(
+                                context, patientDocs[index]);
+                          },
+                        ),
+                      ],
                     ),
                     onTap: () {
                       _navigateToPatientInfo(
@@ -65,7 +103,8 @@ class MainScreen extends StatelessWidget {
     );
   }
 
-  void _showDeleteConfirmation(BuildContext context, QueryDocumentSnapshot patient) {
+  void _showDeleteConfirmation(
+      BuildContext context, QueryDocumentSnapshot patient) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -105,10 +144,32 @@ class MainScreen extends StatelessWidget {
 
   void _deletePatient(String documentId) {
     patients.doc(documentId).delete().then((value) {
-      print('Patient deleted successfully');
+      print('Bệnh nhân đã bị xóa thành công');
     }).catchError((error) {
-      print('Error deleting patient: $error');
+      print('Lỗi xóa bệnh nhân: $error');
     });
+  }
+
+  void _navigateToEditPatient(
+    BuildContext context,
+    String initialPatientName,
+    String truyenDich,
+    String tocdotruyen,
+    String dungtichbinh,
+    String documentId,
+  ) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EditPatientScreen(
+          initialPatientName,
+          truyenDich,
+          tocdotruyen,
+          dungtichbinh,
+          documentId,
+        ),
+      ),
+    );
   }
 
   void _navigateToPatientInfo(

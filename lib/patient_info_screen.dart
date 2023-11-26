@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-// ignore: must_be_immutable
 class PatientInfoScreen extends StatefulWidget {
-  String initialPatientName;
-  String truyenDich;
-  String tocdotruyen;
-  String dungtichbinh;
+  final String initialPatientName;
+  final String truyenDich;
+  final String tocdotruyen;
+  final String dungtichbinh;
+
   PatientInfoScreen(this.initialPatientName, this.truyenDich, this.tocdotruyen, this.dungtichbinh);
+
   @override
   _PatientInfoScreenState createState() => _PatientInfoScreenState();
 }
@@ -19,6 +20,15 @@ class _PatientInfoScreenState extends State<PatientInfoScreen> {
   final TextEditingController _dungtichbinhController = TextEditingController();
 
   final CollectionReference patients = FirebaseFirestore.instance.collection('patients');
+
+  @override
+  void initState() {
+    super.initState();
+    _patientNameController.text = widget.initialPatientName ?? '';
+    _infusionTypeController.text = widget.truyenDich ?? '';
+    _tocDoTruyenController.text = widget.tocdotruyen ?? '';
+    _dungtichbinhController.text = widget.dungtichbinh ?? '';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,14 +69,6 @@ class _PatientInfoScreenState extends State<PatientInfoScreen> {
               },
               style: ElevatedButton.styleFrom(primary: Colors.purple),
               child: Text('Lưu thông tin', style: TextStyle(color: Colors.white)),
-            ),
-            SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {
-                _showPatientList(context);
-              },
-              style: ElevatedButton.styleFrom(primary: Colors.purple),
-              child: Text('Danh sách bệnh nhân', style: TextStyle(color: Colors.white)),
             ),
           ],
         ),
@@ -113,53 +115,4 @@ class _PatientInfoScreenState extends State<PatientInfoScreen> {
       ),
     );
   }
-
- void _showPatientList(BuildContext context) {
-  showDialog(
-    context: context,
-    builder: (context) {
-      return AlertDialog(
-        title: Text('Danh sách bệnh nhân', style: TextStyle(color: Colors.black)),
-        content: StreamBuilder<QuerySnapshot>(
-          stream: patients.snapshots(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return CircularProgressIndicator();
-            }
-
-            if (snapshot.hasError || snapshot.data == null) {
-              return Text('Đã xảy ra lỗi hoặc dữ liệu rỗng: ${snapshot.error}');
-            }
-
-            List<QueryDocumentSnapshot> patients = snapshot.data!.docs;
-
-            return SingleChildScrollView(
-              child: DataTable(
-                columns: const [
-                  DataColumn(label: Text('STT', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.orange))),
-                  DataColumn(label: Text('Tên bệnh nhân', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.orange))),
-                ],
-                rows: patients.map((patient) {
-                  return DataRow(cells: [
-                    DataCell(Text('${patients.indexOf(patient) + 1}', style: TextStyle(color: Colors.white))),
-                    DataCell(Text('${patient['name']}', style: TextStyle(color: Colors.white))),
-                  ]);
-                }).toList(),
-              ),
-            );
-          },
-        ),
-        actions: <Widget>[
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            style: ElevatedButton.styleFrom(primary: Colors.white),
-            child: Text('Đóng', style: TextStyle(color: Colors.white)),
-          ),
-        ],
-      );
-    },
-  );
-}
 }
