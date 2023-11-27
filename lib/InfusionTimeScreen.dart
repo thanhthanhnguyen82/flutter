@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 
 class InfusionTimeScreen extends StatefulWidget {
   @override
@@ -8,29 +9,43 @@ class InfusionTimeScreen extends StatefulWidget {
 
 class _InfusionTimeScreenState extends State<InfusionTimeScreen> {
   TextEditingController _infusionSpeedController = TextEditingController();
+  TextEditingController _patientNameController = TextEditingController();
+  TextEditingController _countdownDurationController = TextEditingController();
+  bool _isCountingDown = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Tốc độ truyền'),
-         backgroundColor: const Color.fromARGB(255, 161, 81, 75),
+        backgroundColor: const Color.fromARGB(255, 161, 81, 75),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(height: 16), // Add some spacing
+            SizedBox(height: 16),
             Container(
-              padding: EdgeInsets.all(16), // Add padding around the container
+              padding: EdgeInsets.all(16),
               child: Column(
                 children: [
+                  TextField(
+                    controller: _patientNameController,
+                    decoration: InputDecoration(labelText: 'Tên bệnh nhân'),
+                  ),
+                  SizedBox(height: 16),
                   TextField(
                     controller: _infusionSpeedController,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(labelText: 'Tốc độ truyền'),
                   ),
-                  SizedBox(height: 16), // Add some spacing
+                  SizedBox(height: 16),
+                  TextField(
+                    controller: _countdownDurationController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(labelText: 'Thời gian đồng hồ (giây)'),
+                  ),
+                  SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: () {
                       _handleConfirmation();
@@ -38,6 +53,29 @@ class _InfusionTimeScreenState extends State<InfusionTimeScreen> {
                     style: ElevatedButton.styleFrom(primary: Colors.blue),
                     child: Text('Lưu thông tin', style: TextStyle(color: Colors.white)),
                   ),
+                  SizedBox(height: 16),
+                  _isCountingDown
+                      ? CountdownTimer(
+                          endTime: DateTime.now().millisecondsSinceEpoch +
+                              int.parse(_countdownDurationController.text) * 1000,
+                          textStyle: TextStyle(fontSize: 24, color: Colors.red),
+                          onEnd: () {
+                            setState(() {
+                              _isCountingDown = false;
+                            });
+                            // Handle countdown timer end
+                            print('Countdown timer ended');
+                          },
+                        )
+                      : ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              _isCountingDown = true;
+                            });
+                          },
+                          style: ElevatedButton.styleFrom(primary: Colors.green),
+                          child: Text('Bắt đầu', style: TextStyle(color: Colors.white)),
+                        ),
                 ],
               ),
             ),
@@ -58,7 +96,6 @@ class _InfusionTimeScreenState extends State<InfusionTimeScreen> {
             keyboardType: TextInputType.number,
             decoration: InputDecoration(labelText: 'Tốc độ truyền'),
           ),
-          
         );
       },
     );
@@ -71,26 +108,32 @@ class _InfusionTimeScreenState extends State<InfusionTimeScreen> {
   }
 
   void _handleConfirmation() {
-    if (_infusionSpeedController.text.isNotEmpty) {
+    if (_patientNameController.text.isNotEmpty &&
+        _infusionSpeedController.text.isNotEmpty &&
+        _countdownDurationController.text.isNotEmpty) {
+      print('Tên bệnh nhân: ${_patientNameController.text}');
       print('Đã chọn tốc độ truyền: ${_infusionSpeedController.text} gout/phút');
+      print('Thời gian đồng hồ: ${_countdownDurationController.text} giây');
 
       // Save to Firebase
-      _saveInfusionSpeedToFirebase(_infusionSpeedController.text);
+      _saveInfusionSpeedToFirebase(
+        _patientNameController.text,
+        _infusionSpeedController.text,
+      );
     } else {
-      print('Chưa nhập tốc độ truyền');
+      print('Chưa nhập đủ thông tin');
     }
   }
 
-  void _saveInfusionSpeedToFirebase(String speed) async {
+  void _saveInfusionSpeedToFirebase(String patientName, String speed) async {
     try {
-      // Replace 'infusion_speeds' with the actual name of your Firestore collection
       CollectionReference infusionSpeeds =
           FirebaseFirestore.instance.collection('infusion_speeds');
 
-      // Add a new document with a unique ID
       await infusionSpeeds.add({
+        'patient_name': patientName,
         'speed': speed,
-        'timestamp': FieldValue.serverTimestamp(), // Optional: Add a timestamp
+        'timestamp': FieldValue.serverTimestamp(),
       });
 
       print("Infusion speed added to Firebase");
@@ -102,6 +145,8 @@ class _InfusionTimeScreenState extends State<InfusionTimeScreen> {
   @override
   void dispose() {
     _infusionSpeedController.dispose();
+    _patientNameController.dispose();
+    _countdownDurationController.dispose();
     super.dispose();
   }
 }

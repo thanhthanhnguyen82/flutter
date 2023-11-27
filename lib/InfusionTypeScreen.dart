@@ -217,6 +217,8 @@ class _InfusionTypeScreenState extends State<InfusionTypeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Loại Dịch Truyền', style: TextStyle(color: Colors.black)),
+        backgroundColor: const Color.fromARGB(255, 161, 81, 75),
+
       ),
       body: Column(
         children: [

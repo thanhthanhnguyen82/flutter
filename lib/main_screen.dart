@@ -211,7 +211,7 @@ class PatientInfoScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Thông tin bệnh nhân'),
-        backgroundColor: Colors.blue,
+        backgroundColor: const Color.fromARGB(255, 161, 81, 75),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
