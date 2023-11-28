@@ -39,64 +39,6 @@ class _MenuScreenState extends State<MenuScreen> {
     );
   }
 
-  void showAddPatientDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text('Thêm Bệnh Nhân'),
-          content: Column(
-            children: [
-              TextField(
-                controller: patientNameController,
-                decoration: InputDecoration(labelText: 'Tên Bệnh Nhân'),
-              ),
-              TextField(
-                controller: truyenDichController,
-                decoration: InputDecoration(labelText: 'Loại Dịch Truyền'),
-              ),
-              TextField(
-                controller: tocDoTruyenController,
-                decoration: InputDecoration(labelText: 'Tốc độ truyền'),
-              ),
-              TextField(
-                controller: dungTichBinhController,
-                decoration: InputDecoration(labelText: 'Dung tích bình'),
-              ),
-            ],
-          ),
-          actions: <Widget>[
-            ElevatedButton(
-              onPressed: () {
-                addNewPatient();
-                Navigator.pop(context);
-              },
-              child: Text('Thêm'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text('Hủy'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void addNewPatient() {
-    String patientName = patientNameController.text;
-    String truyenDich = truyenDichController.text;
-    String tocDoTruyen = tocDoTruyenController.text;
-    String dungTichBinh = dungTichBinhController.text;
-
-    String patientInfo =
-        '$patientName, $truyenDich, $tocDoTruyen, $dungTichBinh';
-    patientList.add(patientInfo);
-
-    print('Danh sách bệnh nhân: $patientList');
-  }
 
   void handleLogout(BuildContext context) {
     Navigator.pushReplacement(
@@ -147,7 +89,7 @@ class _MenuScreenState extends State<MenuScreen> {
             ),
             buildListTile(
               icon: Icons.list,
-              title: 'Danh sách bệnh nhân',
+              title: 'Thêm bệnh nhân',
               onTap: () {
                 Navigator.pop(context);
                 navigateToPatientList(context);
