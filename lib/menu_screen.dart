@@ -111,7 +111,7 @@ class _MenuScreenState extends State<MenuScreen> {
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
-            DrawerHeader(
+            const DrawerHeader(
               decoration: BoxDecoration(
                 color: Colors.indigo, // Updated to a vibrant color
               ),

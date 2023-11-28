@@ -141,8 +141,8 @@ class _SignInScreenState extends State<SignInScreen> {
                 const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SignUpOption("Đăng kí  | ", SignUpScreen()),
-                    SignUpOption("Quên mật khẩu", ResetPassword()),
+                    TextButtons("Đăng kí  | ", SignUpScreen()),
+                    TextButtons("Quên mật khẩu", ResetPassword()),
                   ],
                 ),
               ],

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class SignUpOption extends StatelessWidget {
-  const SignUpOption(this.textButton, this.onPressed, {super.key});
+class TextButtons extends StatelessWidget {
+  const TextButtons(this.textButton, this.onPressed, {super.key});
   final String textButton;
   final onPressed;
   @override
